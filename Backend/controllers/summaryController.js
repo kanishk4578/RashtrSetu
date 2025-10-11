@@ -6,7 +6,7 @@ const sendAnswersToCohere = async (req, res) => {
     const { questionId } = req.params;
     if (!questionId) {
       return res.status(400).json({ error: "Question ID is required" });
-    }
+    }https://docs.cohere.com/docs/models#command read this documentation to solve the above render problem suggest changes in this code
 
     const answers = await answerModel.find({ questionId });
     if (!answers || answers.length === 0) {
@@ -18,13 +18,8 @@ const sendAnswersToCohere = async (req, res) => {
     const cohereResponse = await axios.post(
       'https://api.cohere.ai/v1/chat',
       {
-        model: 'command-a-03-2025',  // ✅ use the new model
-        messages: [
-          {
-            role: 'user',
-            content: `Summarize the following multiple responses into concise bullet points highlighting overall sentiment, pros, and cons:\n\n${answerTexts}`,
-          }
-        ],
+        model: 'command-a-03-2025',  
+        message: `Summarize the following multiple responses into concise bullet points highlighting overall sentiment, pros, and cons:\n\n${answerTexts}`
       },
       {
         headers: {
@@ -34,13 +29,9 @@ const sendAnswersToCohere = async (req, res) => {
       }
     );
 
-    const summary = cohereResponse.data.message?.content?.[0]?.text || "No summary generated.";
-    res.json({ summary });
-
+    res.json({ summary: cohereResponse.data.text }); // updated key
   } catch (err) {
     console.error("Cohere summarization error:", err.response?.data || err.message);
     res.status(500).json({ error: "Failed to summarize with Cohere" });
   }
 };
-
-module.exports = sendAnswersToCohere;
