@@ -8,7 +8,7 @@ const sendAnswersToCohere = async (req, res) => {
       return res.status(400).json({ error: "Question ID is required" });
     }https://docs.cohere.com/docs/models#command read this documentation to solve the above render problem suggest changes in this code
 
-    const answers = await answerModel.find({ questionId });
+    let answers = await answerModel.find({ questionId });
     if (!answers || answers.length === 0) {
       return res.status(404).json({ error: "No answers found for this question." });
     }
