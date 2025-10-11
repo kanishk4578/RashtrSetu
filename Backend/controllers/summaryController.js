@@ -16,13 +16,10 @@ const sendAnswersToCohere = async (req, res) => {
     const answerTexts = answers.map(a => a.answerText).join('\n');
 
     const cohereResponse = await axios.post(
-      'https://api.cohere.ai/v1/summarize',
+      'https://api.cohere.ai/v1/chat',
       {
-        text: `Here are the responses from multiple people to a decision:\n${answerTexts}\n\nSummarize the overall sentiment, and highlight unique pros and cons.`,
-        length: 'auto',           
-        format: 'bullets',          
-        model: 'command',           
-        temperature: 0.3
+        model: 'command-r-plus',  
+        message: `Summarize the following multiple responses into concise bullet points highlighting overall sentiment, pros, and cons:\n\n${answerTexts}`
       },
       {
         headers: {
@@ -32,8 +29,7 @@ const sendAnswersToCohere = async (req, res) => {
       }
     );
 
-    res.json({ summary: cohereResponse.data.summary });
-
+    res.json({ summary: cohereResponse.data.text }); // updated key
   } catch (err) {
     console.error("Cohere summarization error:", err.response?.data || err.message);
     res.status(500).json({ error: "Failed to summarize with Cohere" });
@@ -43,3 +39,4 @@ const sendAnswersToCohere = async (req, res) => {
 module.exports = {
   sendAnswersToCohere,
 };
+
