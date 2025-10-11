@@ -18,7 +18,7 @@ const sendAnswersToCohere = async (req, res) => {
     const cohereResponse = await axios.post(
       'https://api.cohere.ai/v1/chat',
       {
-        model: 'command-r-plus',  
+        model: 'command-r',  
         message: `Summarize the following multiple responses into concise bullet points highlighting overall sentiment, pros, and cons:\n\n${answerTexts}`
       },
       {
